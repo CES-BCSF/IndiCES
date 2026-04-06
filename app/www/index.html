@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IndiCES</title>
+  <link rel="icon" type="image/svg+xml" href="logo_marca_minima_indicadores_sf.svg">
+  {{ headContent() }}
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- ===== HEADER / NAVBAR ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <img src="logo_marca_minima_indicadores_sf.svg" alt="" class="logo-img">
+        <span class="logo-text">IndiCES</span>
+      </a>
+
+      <!-- Nav desktop -->
+      <nav class="nav-desktop">
+        <a href="#indicador">Indicador</a>
+        <a href="#grafico">Gr&aacute;fico</a>
+        <a href="#detalle">Ficha</a>
+      </nav>
+
+      <!-- Hamburguesa mobile -->
+      <button class="hamburger" id="hamburger-btn" aria-label="Men&uacute;">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Nav mobile (se abre con hamburguesa) -->
+    <nav class="nav-mobile" id="nav-mobile">
+      <a href="#indicador">Indicador</a>
+      <a href="#grafico">Gr&aacute;fico</a>
+      <a href="#detalle">Detalle</a>
+    </nav>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container">
+      <img src="logo_marca_minima_indicadores_sf.svg" alt="IndiCES" class="hero-logo">
+      <h1 class="hero-title">IndiCES</h1>
+      <p class="hero-subtitle">Indicadores económicos procesados por el <a href="https://www.bcsf.com.ar/ces/index.php"
+          target="_blank" rel="noopener noreferrer">Centro de Estudios y Servicios</a> de la <a
+          href="https://www.bcsf.com.ar" target="_blank" rel="noopener noreferrer">Bolsa de comercio de Santa Fe</a></p>
+    </div>
+  </section>
+
+  <!-- ===== SELECTOR DE INDICADOR ===== -->
+  <section class="section" id="indicador">
+    <div class="container">
+      <p class="section-label">Seleccioná un indicador</p>
+      <div class="selector-wrapper">
+        {{ selector }}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== METADATA PRINCIPAL ===== -->
+  <section class="section metadata-principal">
+    <div class="container">
+      {{ metadata_principal }}
+    </div>
+  </section>
+
+  <!-- ===== GRAFICO ===== -->
+  <section class="section" id="grafico">
+    <div class="container">
+      <p class="section-label">Evolución histórica | Datos originales y filtrados</p>
+      {{ grafico }}
+      <div class="chart-legend-note">
+        <div class="chart-legend-item">
+          <span class="chart-legend-sombra"></span>
+          <strong>Recesiones | Datos desde enero de 1994</strong>
+          <span>Per&iacute;odos de contracci&oacute;n econ&oacute;mica datados por los &iacute;ndices de actividad de Santa Fe (ICA-SFE)
+          y Argentina (ICA-ARG) | Activables desde la leyenda del gr&aacute;fico.
+          Fuentes: CES-BCSF y CICEc
+          </span>
+        </div>
+        <div class="chart-legend-item">
+          <span class="chart-legend-line chart-legend-line--original"></span>
+          <strong>Serie original</strong>
+          <span>Datos brutos publicados por la fuente, en algunos casos sujetos a cambios de unidad de medida,
+            agregaci&oacute;n o transformaci&oacute;n matem&aacute;tica.</span>
+        </div>
+        <div class="chart-legend-item">
+          <span class="chart-legend-line chart-legend-line--filtrada"></span>
+          <strong>Serie filtrada</strong>
+          <span>Datos desestacionalizados y corregidos por valores extremos. Si es necesario, tambi&eacute;n se aplica un proceso
+            de suavizado adicional.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACCIONES: PDF + MAS INFO ===== -->
+  <section class="section acciones">
+    <div class="container">
+      <div class="acciones-row">
+        {{ acciones }}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DETALLE / METADATA SECUNDARIA ===== -->
+  <section class="section" id="detalle">
+    <div class="container">
+      <p class="section-label">Ficha del indicador</p>
+      <div class="detalle-content">
+        {{ detalle }}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TEXTO EXPLICATIVO ===== -->
+  <section class="section explicativo">
+    <div class="container">
+      {{ explicativo }}
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 IndiCES &mdash; Centro de Estudios y Servicios, Bolsa de Comercio de Santa Fe</p>
+      <p class="footer-creditos">
+        Desarrollado por <a href="https://www.linkedin.com/in/franco-ocampo-329437229" target="_blank"
+          rel="noopener noreferrer">Franco E. Ocampo</a> | Proyecto de pregrado, UTN Santa Fe ⵥ
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+name: ETL semanal - IndiCES
+
+on:
+    schedule:
+        - cron: "0 16 * * *" #todos los Lunes a las 11 am
+    workflow_dispatch: #disparo manual desde GitHub
+
+# env:
+#   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+        - name: Checkout repo
+          uses: actions/checkout@v4
+
+        - name: Pull cambios remotos
+          run: git pull
+
+        - name: Setup R
+          uses: r-lib/actions/setup-r@v2
+          with:
+            r-version: "4.5.0"
+            use-public-rspm: true
+
+        - name: Instalar dependencias del sistema
+          run: |
+            sudo apt-get update -qq
+            sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+
+        - name: Cache renv
+          uses: actions/cache@v4
+          with:
+            path: renv/library
+            key: renv-${{ runner.os }}-${{ hashFiles('renv.lock') }}
+            restore-keys: renv-${{ runner.os }}-
+
+        - name: Restaurar paquetes renv
+          run: Rscript -e "renv::restore()"
+        
+        - name: Ejecutar ETL
+          run: Rscript etl/pipeline-core.R
+
+        - name : Copiar RDS a app/
+          run: |
+            cp data/processed/indicadores.rds app/data/processed/indicadores.rds
+            cp data/processed/datos.rds app/data/processed/datos.rds
+            cp data/processed/ciclos.rds app/data/processed/ciclos.rds
+        
+        - name: Commit datos actualizados
+          run: |
+           git config --local user.name "github-actions[bot]"
+           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+           git add data/processed/ app/data/processed/
+           git diff --staged --quiet || git commit -m "etl: actualizar datos $(date +'%Y-%m-%d')"
+           git push
+
+        - name: Instalar rsconnect
+          run: Rscript -e "install.packages('rsconnect')"
+
+        - name: Deploy a shinnyapps.io
+          env:
+            SHINYAPPS_ACCOUNT: ${{ secrets.SHINYAPPS_ACCOUNT }}
+            SHINYAPPS_TOKEN: ${{ secrets.SHINYAPPS_TOKEN }}
+            SHINYAPPS_SECRET: ${{ secrets.SHINYAPPS_SECRET }}
+          run: |
+            Rscript -e "
+              rsconnect::setAccountInfo(
+                name   = Sys.getenv('SHINYAPPS_ACCOUNT'),
+                token  = Sys.getenv('SHINYAPPS_TOKEN'),
+                secret = Sys.getenv('SHINYAPPS_SECRET')
+              )
+              rsconnect::deployApp('app', appName = 'indicesApp', forceUpdate = TRUE)
+            "
+      
