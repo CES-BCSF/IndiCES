@@ -1,4 +1,4 @@
-name: ETL semanal - IndiCES
+name: ETL diario - IndiCES
 
 on:
     schedule:
