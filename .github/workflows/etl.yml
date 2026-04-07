@@ -2,7 +2,7 @@ name: ETL semanal - IndiCES
 
 on:
     schedule:
-        - cron: "0 16 * * *" #todos los Lunes a las 11 am
+        - cron: "0 16 * * *" # todos los días a las 13 hs Argentina (UTC-3)
     workflow_dispatch: #disparo manual desde GitHub
 
 # env:

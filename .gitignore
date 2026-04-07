@@ -59,9 +59,10 @@ renv/python/
 renv/staging/
 renv/local/
 
-# --- DATA ---
-data/processed/*
-
 # --- Archivos temporales o logs ---
 /logs
 *.log
+
+# --- Claude Code ---
+.claude/
+CLAUDE.md
