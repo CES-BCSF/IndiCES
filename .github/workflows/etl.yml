@@ -45,11 +45,8 @@ jobs:
         - name: Ejecutar ETL
           run: Rscript etl/pipeline-core.R
 
-        - name : Copiar RDS a app/
-          run: |
-            cp data/processed/indicadores.rds app/data/processed/indicadores.rds
-            cp data/processed/datos.rds app/data/processed/datos.rds
-            cp data/processed/ciclos.rds app/data/processed/ciclos.rds
+        - name: Copiar RDS a app/
+          run: cp data/processed/* app/data/processed/
         
         - name: Commit datos actualizados
           run: |
