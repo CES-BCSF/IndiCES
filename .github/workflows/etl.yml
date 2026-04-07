@@ -43,7 +43,7 @@ jobs:
           run: Rscript -e "renv::restore()"
         
         - name: Ejecutar ETL
-          run: Rscript etl/pipeline-core.R
+          run: Rscript -e "options(error = function() quit(status = 1, save = 'no')); source('etl/pipeline-core.R')"
 
         - name: Copiar RDS a app/
           run: cp data/processed/* app/data/processed/
