@@ -71,6 +71,6 @@ jobs:
                 token  = Sys.getenv('SHINYAPPS_TOKEN'),
                 secret = Sys.getenv('SHINYAPPS_SECRET')
               )
-              rsconnect::deployApp('app', appName = 'indicesApp', forceUpdate = TRUE)
+              rsconnect::deployApp('app', appName = 'IndicesApp', forceUpdate = TRUE)
             "
       
