@@ -460,6 +460,10 @@ a {
     gap: 0;
   }
 
+  #chart-grafico {
+    height: 450px !important;
+  }
+
   .detalle-content dt {
     margin-top: 1rem;
   }

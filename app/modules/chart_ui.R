@@ -2,7 +2,7 @@
 #' UI del grafico de serie temporal
 chartUI <- function(id) {
   ns <- shiny::NS(id)
-  plotly::plotlyOutput(ns("grafico"), height = "420px")
+  plotly::plotlyOutput(ns("grafico"), height = "520px")
 }
 
 #' Server del grafico de serie temporal
@@ -66,7 +66,6 @@ chartServer <- function(id, datos_rv, indicador_rv, ciclos) {
           hovertemplate = hovertemplate
         ) |>
         plotly::layout(
-          title      = base::list(text = indicador$nombre, font = base::list(size = 14)),
           xaxis      = base::list(
             title    = "",
             showgrid = TRUE,
@@ -99,11 +98,11 @@ chartServer <- function(id, datos_rv, indicador_rv, ciclos) {
             zeroline       = FALSE,
             title          = ""
           ),
-          legend     = base::list(orientation = "h", x = 0.5, xanchor = "center", y = -0.10),
+          legend     = base::list(orientation = "h", x = 0.5, xanchor = "center", y = 0.02, yanchor = "bottom", font = base::list(color = "black"), bgcolor = "rgba(255,255,255,0.75)"),
           showlegend = TRUE,
           paper_bgcolor = "white",
           plot_bgcolor  = "white",
-          margin = base::list(t = 75)
+          margin = base::list(t = 20)
         ) |>
         plotly::config(displayModeBar = FALSE)
     })
