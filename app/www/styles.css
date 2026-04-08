@@ -317,7 +317,10 @@ a {
 /* ===== ACCIONES ===== */
 .acciones {
   border-bottom: none;
-  padding: 1.25rem 0;
+  padding-bottom: none;
+  padding-top: 1.25rem ;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .acciones-row {
@@ -359,6 +362,10 @@ a {
 }
 
 /* ===== DETALLE ===== */
+#detalle .section-label {
+  margin-bottom: 0.35rem;
+}
+
 .detalle-content dl {
   display: grid;
   grid-template-columns: 9.5rem 1fr;
@@ -457,12 +464,26 @@ a {
     margin-top: 1rem;
   }
 
+  .detalle-content dt:first-child {
+    margin-top: 0;
+  }
+
   .acciones-row {
     flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+
+  .acciones-row > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
   }
 
   .btn-indices {
     justify-content: center;
+    width: 100%;
   }
 
   .container {
