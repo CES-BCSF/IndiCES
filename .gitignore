@@ -66,3 +66,7 @@ renv/local/
 # --- Claude Code ---
 .claude/
 CLAUDE.md
+
+# --- Informes locales ---
+INFORME*.md
+INFORME*.pdf

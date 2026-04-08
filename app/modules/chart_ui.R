@@ -68,11 +68,25 @@ chartServer <- function(id, datos_rv, indicador_rv, ciclos) {
         plotly::layout(
           title      = base::list(text = indicador$nombre, font = base::list(size = 14)),
           xaxis      = base::list(
-            title   = "",
+            title    = "",
             showgrid = TRUE,
-            range   = base::list(
-              base::min(datos$fecha),
+            range    = base::list(
+              base::seq(base::max(datos$fecha), by = "-10 years", length.out = 2)[2],
               base::max(datos$fecha)
+            ),
+            rangeselector = base::list(
+              buttons = base::list(
+                base::list(count = 1,  label = "12 meses", step = "year",  stepmode = "backward"),
+                base::list(count = 5,  label = "5 años",   step = "year",  stepmode = "backward"),
+                base::list(count = 10, label = "10 años",  step = "year",  stepmode = "backward"),
+                base::list(step = "all", label = "Todo")
+              ),
+              bgcolor     = "rgba(240,240,240,0.9)",
+              activecolor = "rgba(0,0,0,0.15)"
+            ),
+            rangeslider = base::list(
+              visible   = TRUE,
+              thickness = 0.08
             )
           ),
           yaxis      = base::list(title = indicador$unidad_medida, showgrid = TRUE, gridcolor = "#e9ecef"),
@@ -89,7 +103,7 @@ chartServer <- function(id, datos_rv, indicador_rv, ciclos) {
           showlegend = TRUE,
           paper_bgcolor = "white",
           plot_bgcolor  = "white",
-          margin = base::list(t = 50)
+          margin = base::list(t = 75)
         ) |>
         plotly::config(displayModeBar = FALSE)
     })

@@ -376,6 +376,7 @@ a {
   font-size: 0.95rem;
   color: var(--color-text);
   margin: 0;
+  text-align: justify;
 }
 
 /* ===== TEXTO EXPLICATIVO ===== */
