@@ -185,11 +185,26 @@ write_output <- function(series) {
   if (!base::dir.exists(OUTPUT_DIR)) base::dir.create(OUTPUT_DIR, recursive = TRUE)
   base::saveRDS(series$indicadores, base::file.path(OUTPUT_DIR, "indicadores.rds"))
   base::saveRDS(series$datos,       base::file.path(OUTPUT_DIR, "datos.rds"))
-  base::saveRDS(series$ciclos,      base::file.path(OUTPUT_DIR, "ciclos.rds"))
+  if (!base::is.null(series$ciclos)) {
+    base::saveRDS(series$ciclos, base::file.path(OUTPUT_DIR, "ciclos.rds"))
+  }
 }
 
 extract_ciclos <- function() {
-  temp <- download_excel("https://www.bcsf.com.ar/ces/base-datos/bases/download-public-file/5")
+  ciclos_path <- base::file.path(OUTPUT_DIR, "ciclos.rds")
+  temp <- tryCatch(
+    download_excel("https://www.bcsf.com.ar/ces/base-datos/bases/download-public-file/5"),
+    error = function(e) {
+      base::message("[ciclos] No se pudo descargar: ", conditionMessage(e))
+      if (base::file.exists(ciclos_path)) {
+        base::message("[ciclos] Se usará el archivo existente en ", ciclos_path)
+      } else {
+        base::message("[ciclos] No existe archivo previo. Se omite la escritura de ciclos.")
+      }
+      NULL
+    }
+  )
+  if (base::is.null(temp)) return(if (base::file.exists(ciclos_path)) base::readRDS(ciclos_path) else NULL)
   base::on.exit(base::unlink(temp))
   
   data <- readxl::read_excel(temp, sheet = "1.1", col_names = FALSE,
@@ -213,12 +228,25 @@ extract_ciclos <- function() {
 
 #' Procesa todos los indicadores del vector de codigos dado
 #' Retorna una lista con $indicadores (tibble) y $datos (tibble)
+#' Los indicadores que fallan se loggean y se omiten sin detener la ejecucion
 load_all_indicators <- function(codigos) {
-  resultados <- purrr::map(codigos, process_indicator)
+  safe_process <- purrr::safely(process_indicator)
+  resultados   <- purrr::map(codigos, safe_process)
 
+  fallos <- purrr::keep(resultados, ~ !base::is.null(.x$error))
+  if (base::length(fallos) > 0) {
+    codigos_fallidos <- codigos[purrr::map_lgl(resultados, ~ !base::is.null(.x$error))]
+    purrr::walk2(codigos_fallidos, fallos, ~ base::message(
+      "[ETL] Error en '", .x, "': ", conditionMessage(.y$error)
+    ))
+    base::message("[ETL] ", base::length(fallos), " de ", base::length(codigos),
+                  " indicadores fallaron y fueron omitidos.")
+  }
+
+  ok <- purrr::keep(resultados, ~ base::is.null(.x$error))
   base::list(
-    indicadores = dplyr::bind_rows(purrr::map(resultados, "metadata")),
-    datos       = dplyr::bind_rows(purrr::map(resultados, "serie"))
+    indicadores = dplyr::bind_rows(purrr::map(ok, ~ .x$result$metadata)),
+    datos       = dplyr::bind_rows(purrr::map(ok, ~ .x$result$serie))
   )
 }
 
