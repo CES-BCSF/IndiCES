@@ -106,11 +106,18 @@ parse_fecha <- function(x) {
   fecha <- base::rep(base::as.Date(NA), base::length(x))
 
   if (base::any(!trimestral)) {
-    # normalizar a 2 decimales primero — 1994.1 (float) → "1994.10" → octubre
-    x_norm <- base::sprintf("%.2f", base::as.numeric(x[!trimestral]))
-    partes <- base::strsplit(x_norm, "\\.")
-    anio   <- base::sapply(partes, `[`, 1)
-    mes    <- base::sapply(partes, `[`, 2)
+    partes  <- base::strsplit(x[!trimestral], "\\.")
+    anio    <- base::sapply(partes, `[`, 1)
+    mes_raw <- base::sapply(partes, `[`, 2)
+    # Single-digit decimal: right-shift ("1" → 10 for Excel float "1994.10");
+    # if result > 12 (e.g. "3" → 30), fall back to the digit itself (month 3).
+    mes_int <- base::ifelse(
+      base::nchar(mes_raw) == 1L,
+      base::as.integer(mes_raw) * 10L,
+      base::as.integer(mes_raw)
+    )
+    mes_int <- base::ifelse(mes_int > 12L, base::as.integer(mes_raw), mes_int)
+    mes     <- base::sprintf("%02d", mes_int)
     fecha[!trimestral] <- base::as.Date(base::paste(anio, mes, "01", sep = "-"))
   }
 
