@@ -1,7 +1,7 @@
 # CONFIGURACION ####
 
 BASE_URL    <- "https://ces-bcsf.github.io/CicSFE_GitHub/indicadores"
-ICA_SFE_EXCEL_URL <- "https://www.bcsf.com.ar/ces/base-datos/bases/download-public-file/5"
+ICA_SFE_EXCEL_URL <- "https://ces-bcsf.github.io/bd_ces/DB_ICA-SFE_Variables_componentes.xlsx"
 GITHUB_API  <- "https://api.github.com/repos/ces-bcsf/CicSFE_GitHub/contents/indicadores"
 OUTPUT_DIR  <- "data/processed"
 
@@ -71,6 +71,14 @@ extract_resumen <- function(html) {
 #' Busca el <h3> cuyo <b> dice "Descripción" y retorna el texto después del |
 extract_descripcion <- function(html) {
   nodo  <- rvest::html_element(html, xpath = "//h3[b[normalize-space(.)='Descripción']]")
+  texto <- rvest::html_text2(nodo)
+  base::trimws(base::sub("^[^|]+\\|", "", texto))
+}
+
+#' Extrae el alcance del indicador desde el HTML ya parseado
+#' Busca el <h3> cuyo <b> dice "Alcance" y retorna el texto después del |
+extract_alcance_str <- function(html) {
+  nodo  <- rvest::html_element(html, xpath = "//h3[b[normalize-space(.)='Alcance']]")
   texto <- rvest::html_text2(nodo)
   base::trimws(base::sub("^[^|]+\\|", "", texto))
 }
@@ -174,6 +182,7 @@ process_indicator <- function(codigo) {
     fecha_ultimo_dato   = serie$fecha[[base::nrow(serie)]],
     frecuencia          = infer_frecuencia(serie$fecha),
     descripcion_str     = extract_descripcion(html),
+    alcance_str         = extract_alcance_str(html),
     codigo_str          = extract_codigo_str(html),
     um_str              = extract_um_str(html),
     fuente_primaria_str = extract_fuente_primaria_str(html),
@@ -200,7 +209,7 @@ write_output <- function(series) {
 extract_ciclos <- function() {
   ciclos_path <- base::file.path(OUTPUT_DIR, "ciclos.rds")
   temp <- tryCatch(
-    download_excel("https://www.bcsf.com.ar/ces/base-datos/bases/download-public-file/5"),
+    download_excel(ICA_SFE_EXCEL_URL),
     error = function(e) {
       base::message("[ciclos] No se pudo descargar: ", conditionMessage(e))
       if (base::file.exists(ciclos_path)) {

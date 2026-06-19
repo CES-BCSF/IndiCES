@@ -76,6 +76,8 @@ detalleServer <- function(id, indicador_rv) {
       shiny::tags$dl(
         shiny::tags$dt("Descripción"),
         shiny::tags$dd(ind$descripcion_str[[1]]),
+        shiny::tags$dt("Alcance"),
+        shiny::tags$dd(ind$alcance_str[[1]]),
         shiny::tags$dt("Código"),
         shiny::tags$dd(ind$codigo_str[[1]]),
         shiny::tags$dt("Unidad de medida"),
