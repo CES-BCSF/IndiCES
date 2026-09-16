@@ -10,8 +10,14 @@ OUTPUT_DIR  <- "data/processed"
 #' Obtiene los codigos de todos los indicadores disponibles desde la API de GitHub.
 #' Filtra los archivos `_out.xlsx` y excluye los prefijados con `HP_` (no son series).
 #' Retorna un vector de strings con los codigos (ej: "ARG-IL5", "SFE-RMP")
+#' Si existe la variable de entorno `GITHUB_TOKEN` la usa para autenticar
+#' (sin token la API limita a 60 requests/hora por IP y falla con 403 en Actions).
 fetch_codigos <- function() {
-  archivos <- jsonlite::fromJSON(GITHUB_API)
+  headers <- c(Accept = "application/vnd.github+json")
+  token <- base::Sys.getenv("GITHUB_TOKEN")
+  if (base::nzchar(token)) headers <- c(headers, Authorization = base::paste("Bearer", token))
+  con <- base::url(GITHUB_API, headers = headers, method = "libcurl")
+  archivos <- jsonlite::fromJSON(base::readLines(con, warn = FALSE, encoding = "UTF-8"))
   nombres  <- archivos$name
   xlsx     <- nombres[base::grepl("_out\\.xlsx$", nombres) & !base::grepl("^HP", nombres)]
   base::sub("_out\\.xlsx$", "", xlsx)
