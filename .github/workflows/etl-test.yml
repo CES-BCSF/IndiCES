@@ -38,6 +38,8 @@ jobs:
           run: Rscript -e "renv::restore()"
 
         - name: Ejecutar ETL
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: Rscript -e "options(error = function() quit(status = 1, save = 'no')); source('etl/pipeline-core.R')"
 
         - name: Copiar RDS a app/
