@@ -228,15 +228,15 @@ extract_ciclos <- function() {
   filas <- 10:base::nrow(data)
 
   sfe <- dplyr::tibble(
-    id_ciclo = base::as.character(data[[15]][5]),
+    id_ciclo = base::as.character(data[[14]][5]),
     fecha    = parse_fecha(data[[1]][filas]),
-    valor    = data[[15]][filas],
+    valor    = data[[14]][filas],
   ) |> dplyr::filter(!base::is.na(valor))
 
   arg <- dplyr::tibble(
-    id_ciclo = base::as.character(data[[17]][5]),
+    id_ciclo = base::as.character(data[[16]][5]),
     fecha    = parse_fecha(data[[1]][filas]),
-    valor    = data[[17]][filas],
+    valor    = data[[16]][filas],
   ) |> dplyr::filter(!base::is.na(valor))
 
   dplyr::bind_rows(sfe, arg)
